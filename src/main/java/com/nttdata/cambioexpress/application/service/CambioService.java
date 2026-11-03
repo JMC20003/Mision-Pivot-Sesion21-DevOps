@@ -13,7 +13,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class CambioService {
@@ -21,6 +22,7 @@ public class CambioService {
 
     private final TipoCambioRepository tipoCambioRepository;
     private final CotizacionRepository cotizacionRepository;
+    private final AtomicLong secuenciaCotizaciones = new AtomicLong();
 
     public CambioService(
             TipoCambioRepository tipoCambioRepository,
@@ -49,14 +51,15 @@ public class CambioService {
         BigDecimal tasaAplicada = operacion == Operacion.COMPRA
                 ? tipoCambio.venta()
                 : tipoCambio.compra();
-        BigDecimal montoSoles = monto.multiply(tasaAplicada)
+        BigDecimal montoMoneda = monto.setScale(ESCALA_MONETARIA, RoundingMode.HALF_UP);
+        BigDecimal montoSoles = montoMoneda.multiply(tasaAplicada)
                 .setScale(ESCALA_MONETARIA, RoundingMode.HALF_UP);
 
         Cotizacion cotizacion = new Cotizacion(
-                UUID.randomUUID(),
+                "C-" + String.format(Locale.ROOT, "%04d", secuenciaCotizaciones.incrementAndGet()),
                 moneda,
                 operacion,
-                monto,
+                montoMoneda,
                 montoSoles,
                 tasaAplicada,
                 Instant.now()
@@ -64,7 +67,7 @@ public class CambioService {
         return cotizacionRepository.save(cotizacion);
     }
 
-    public Cotizacion obtenerCotizacion(UUID id) {
+    public Cotizacion obtenerCotizacion(String id) {
         return cotizacionRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "No existe la cotización " + id));

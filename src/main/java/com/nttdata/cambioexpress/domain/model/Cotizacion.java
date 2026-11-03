@@ -3,10 +3,9 @@ package com.nttdata.cambioexpress.domain.model;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
-import java.util.UUID;
 
 public record Cotizacion(
-        UUID id,
+        String id,
         Moneda moneda,
         Operacion operacion,
         BigDecimal montoMoneda,

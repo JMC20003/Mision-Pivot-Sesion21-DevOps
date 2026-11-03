@@ -7,15 +7,15 @@ import com.nttdata.cambioexpress.infrastructure.adapter.in.rest.dto.CotizacionRe
 import com.nttdata.cambioexpress.infrastructure.adapter.in.rest.dto.CotizacionResponse;
 import com.nttdata.cambioexpress.infrastructure.adapter.in.rest.dto.TipoCambioResponse;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -42,14 +42,15 @@ public class CambioController {
     }
 
     @PostMapping("/cotizaciones")
-    @ResponseStatus(HttpStatus.CREATED)
-    public CotizacionResponse cotizar(@Valid @RequestBody CotizacionRequest request) {
-        return CotizacionResponse.from(
+    public ResponseEntity<CotizacionResponse> cotizar(@Valid @RequestBody CotizacionRequest request) {
+        CotizacionResponse response = CotizacionResponse.from(
                 cambioService.cotizar(request.moneda(), request.operacion(), request.monto()));
+        URI location = URI.create("/api/cotizaciones/" + response.id());
+        return ResponseEntity.created(location).body(response);
     }
 
     @GetMapping("/cotizaciones/{id}")
-    public CotizacionResponse obtenerCotizacion(@PathVariable UUID id) {
+    public CotizacionResponse obtenerCotizacion(@PathVariable String id) {
         return CotizacionResponse.from(cambioService.obtenerCotizacion(id));
     }
 

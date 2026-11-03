@@ -5,17 +5,14 @@ import com.nttdata.cambioexpress.domain.model.Moneda;
 import com.nttdata.cambioexpress.domain.model.Operacion;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.UUID;
 
 public record CotizacionResponse(
-        UUID id,
+        String id,
         Moneda moneda,
         Operacion operacion,
-        BigDecimal montoMoneda,
-        BigDecimal montoSoles,
-        BigDecimal tipoCambioAplicado,
-        Instant fecha
+        BigDecimal monto,
+        BigDecimal tipoCambio,
+        BigDecimal montoSoles
 ) {
     public static CotizacionResponse from(Cotizacion cotizacion) {
         return new CotizacionResponse(
@@ -23,9 +20,8 @@ public record CotizacionResponse(
                 cotizacion.moneda(),
                 cotizacion.operacion(),
                 cotizacion.montoMoneda(),
-                cotizacion.montoSoles(),
                 cotizacion.tipoCambioAplicado(),
-                cotizacion.fecha()
+                cotizacion.montoSoles()
         );
     }
 }

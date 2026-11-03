@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CambioServiceTest {
     private TipoCambioRepository tipoCambioRepository;
-    private ConcurrentHashMap<UUID, Cotizacion> cotizaciones;
+    private ConcurrentHashMap<String, Cotizacion> cotizaciones;
     private CambioService service;
 
     @BeforeEach
@@ -49,7 +48,7 @@ class CambioServiceTest {
             }
 
             @Override
-            public Optional<Cotizacion> findById(UUID id) {
+            public Optional<Cotizacion> findById(String id) {
                 return Optional.ofNullable(cotizaciones.get(id));
             }
         };
@@ -77,6 +76,6 @@ class CambioServiceTest {
     @Test
     void obtenerCotizacionInexistenteLanzaNotFound() {
         assertThrows(RecursoNoEncontradoException.class,
-                () -> service.obtenerCotizacion(UUID.randomUUID()));
+                () -> service.obtenerCotizacion("C-9999"));
     }
 }

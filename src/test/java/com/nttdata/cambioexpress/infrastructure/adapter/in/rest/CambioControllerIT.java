@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -36,23 +37,24 @@ class CambioControllerIT {
 
     @Test
     void creaCotizacionYPermiteConsultarla() throws Exception {
-        String respuesta = mockMvc.perform(post("/api/cotizaciones")
+        mockMvc.perform(post("/api/cotizaciones")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"moneda":"USD","operacion":"COMPRA","monto":10}
+                                {"moneda":"USD","operacion":"COMPRA","monto":100}
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.montoSoles", is(37.86)))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+                .andExpect(jsonPath("$.id", is("C-0001")))
+                .andExpect(jsonPath("$.moneda", is("USD")))
+                .andExpect(jsonPath("$.operacion", is("COMPRA")))
+                .andExpect(jsonPath("$.monto", is(100.00)))
+                .andExpect(jsonPath("$.tipoCambio", is(3.786)))
+                .andExpect(jsonPath("$.montoSoles", is(378.60)))
+                .andExpect(header().string("Location", "/api/cotizaciones/C-0001"));
 
-        String id = respuesta.replaceAll("(?s).*\"id\":\"([^\"]+)\".*", "$1");
-
-        mockMvc.perform(get("/api/cotizaciones/{id}", id))
+        mockMvc.perform(get("/api/cotizaciones/{id}", "C-0001"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(id)))
-                .andExpect(jsonPath("$.montoSoles", is(37.86)));
+                .andExpect(jsonPath("$.id", is("C-0001")))
+                .andExpect(jsonPath("$.montoSoles", is(378.60)));
     }
 
     @Test
