@@ -43,17 +43,12 @@ public class CambioService {
     }
 
     public Cotizacion cotizar(Moneda moneda, Operacion operacion, BigDecimal monto) {
-        if (monto == null || monto.signum() <= 0) {
-            throw new IllegalArgumentException("El monto debe ser mayor que cero");
-        }
-
         TipoCambio tipoCambio = obtenerTipoCambio(moneda);
         BigDecimal tasaAplicada = operacion == Operacion.COMPRA
                 ? tipoCambio.venta()
                 : tipoCambio.compra();
+        BigDecimal montoSoles = tipoCambio.convertir(operacion, monto);
         BigDecimal montoMoneda = monto.setScale(ESCALA_MONETARIA, RoundingMode.HALF_UP);
-        BigDecimal montoSoles = montoMoneda.multiply(tasaAplicada)
-                .setScale(ESCALA_MONETARIA, RoundingMode.HALF_UP);
 
         Cotizacion cotizacion = new Cotizacion(
                 "C-" + String.format(Locale.ROOT, "%04d", secuenciaCotizaciones.incrementAndGet()),
