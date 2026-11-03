@@ -1,4 +1,30 @@
-name: CI
+name: ci pipeline
 
-# TODO RN-1: configurar el workflow de Integracion Continua.
-# TODO RN-2: ejecutar las pruebas y publicar el reporte de cobertura JaCoCo.
+on:
+  push:
+    branches:
+      - 'feature/**'
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Build and verify
+        run: mvn -B -ntp verify
