@@ -1,0 +1,4 @@
+name: CI
+
+# TODO RN-1: configurar el workflow de Integracion Continua.
+# TODO RN-2: ejecutar las pruebas y publicar el reporte de cobertura JaCoCo.
