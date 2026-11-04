@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    tools {
+        jdk 'jdk17'
+        maven 'maven3'
+    }
     options {
         timeout(time: 20, unit: 'MINUTES')
     }
@@ -21,7 +25,7 @@ pipeline {
         }
         stage('Publicar artefacto') {
             steps {
-                archive Artifacts artifacts: 'target/cambioexpress-*.jar', fingerprint: true
+                archiveArtifacts artifacts: 'target/cuotafacil-*.jar', fingerprint: true
             }
         }
         stage('Desplegar a cert') {
@@ -29,8 +33,8 @@ pipeline {
                 branch 'master'
             }
             steps {
-                withCredentials([string(credentialsId: 'cambioexpress-deploy-token', variable: 'DEPLOY_TOKEN')]) {
-                    sh 'bash devops/desplegar.sh cert target/cambioexpress-*.jar'
+                withCredentials([string(credentialsId: 'cuotafacil-deploy-token', variable: 'DEPLOY_TOKEN')]) {
+                    sh 'bash devops/desplegar.sh cert target/cuotafacil-*.jar'
                 }
             }
         }

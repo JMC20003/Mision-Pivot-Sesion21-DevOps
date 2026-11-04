@@ -12,6 +12,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,8 +30,8 @@ jobs:
       - name: Upload application jar
         uses: actions/upload-artifact@v4
         with:
-          name: cambioexpress-jar
-          path: target/cambioexpress-*.jar
+          name: cuotafacil-jar
+          path: target/cuotafacil-*.jar
           if-no-files-found: error
 
   deploy-dev:
@@ -44,16 +45,18 @@ jobs:
       - name: Download application jar
         uses: actions/download-artifact@v4
         with:
-          name: cambioexpress-jar
+          name: cuotafacil-jar
           path: dist
 
       - name: Deploy to dev
-        run: bash devops/desplegar.sh dev dist/cambioexpress-*.jar
+        run: bash devops/desplegar.sh dev dist/cuotafacil-*.jar
         env:
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
 
   deploy-cert:
-    needs: deploy-dev
+    needs:
+      - build
+      - deploy-dev
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     environment: cert
@@ -64,10 +67,10 @@ jobs:
       - name: Download application jar
         uses: actions/download-artifact@v4
         with:
-          name: cambioexpress-jar
+          name: cuotafacil-jar
           path: dist
 
       - name: Deploy to cert
-        run: bash devops/desplegar.sh cert dist/cambioexpress-*.jar
+        run: bash devops/desplegar.sh cert dist/cuotafacil-*.jar
         env:
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}

@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.1.2</version>
+		<version>3.3.13</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.nttdata</groupId>
-	<artifactId>cambioexpress</artifactId>
+	<artifactId>cuotafacil</artifactId>
 	<version>1.0.0</version>
-	<name>CambioExpress</name>
-	<description>API para cotizaciones de cambio de moneda</description>
+	<name>CuotaFacil</name>
+	<description>Microservicio CuotaFacil</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -42,11 +42,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
