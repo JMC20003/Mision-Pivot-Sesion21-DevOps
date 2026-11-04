@@ -37,6 +37,7 @@ jobs:
   deploy-dev:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment: dev
     steps:
       - name: Checkout deployment script
@@ -59,6 +60,7 @@ jobs:
       - deploy-dev
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment: cert
     steps:
       - name: Checkout deployment script
